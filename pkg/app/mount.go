@@ -15,7 +15,7 @@ func Mount(mux *http.ServeMux) {
 	adminMux.HandleFunc("/create", adminCreate)
 	adminMux.HandleFunc("/edit", adminEdit)
 
-	mux.Handle("/admin/", onlyAdmin(adminMux))
+	mux.Handle("/admin/", http.StripPrefix("/admin", onlyAdmin(adminMux)))
 }
 
 func onlyAdmin(h http.Handler) http.Handler {

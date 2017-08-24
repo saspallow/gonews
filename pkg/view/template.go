@@ -1,30 +1,45 @@
 package view
 
 import (
+	"bytes"
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
+
+	"github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/css"
+	"github.com/tdewolff/minify/html"
+	"github.com/tdewolff/minify/js"
 )
 
 var (
-	tpIndex = template.New("")
+	tpIndex      = parseTemplate("root.tmpl", "index.tmpl")
+	tpAdminLogin = parseTemplate("root.tmpl", "admin/login.tmpl")
 )
 
-func init() {
-	tpIndex.Funcs(template.FuncMap{})
-	_, err := tpIndex.ParseFiles("template/root.tmpl", "template/index.tmpl")
+var m = minify.New()
 
-	if err != nil {
-		panic(err)
+const templateDir = "template"
+
+func init() {
+	m.AddFunc("text/html", html.Minify)
+	m.AddFunc("text/css", css.Minify)
+	m.AddFunc("text/javascript", js.Minify)
+}
+
+func joinTemplateDir(files ...string) []string {
+	r := make([]string, len(files))
+	for i, f := range files {
+		r[i] = filepath.Join(templateDir, f)
 	}
-	tpIndex = tpIndex.Lookup("root")
+	return r
 }
 
 func parseTemplate(files ...string) *template.Template {
 	t := template.New("")
 	t.Funcs(template.FuncMap{})
-	_, err := tpIndex.ParseFiles(files...)
-
+	_, err := t.ParseFiles(joinTemplateDir(files...)...)
 	if err != nil {
 		panic(err)
 	}
@@ -34,13 +49,22 @@ func parseTemplate(files ...string) *template.Template {
 
 func render(t *template.Template, w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "text/html; chartset=utf-8")
-	err := t.Execute(w, data)
+	buf := bytes.Buffer{}
+	err := t.Execute(&buf, data)
 	if err != nil {
 		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	m.Minify("text/html", w, &buf)
 }
 
 // Index Renders index View
 func Index(w http.ResponseWriter, data interface{}) {
 	render(tpIndex, w, data)
+}
+
+// AdminLogin renders Admin Login View
+func AdminLogin(w http.ResponseWriter, data interface{}) {
+	render(tpAdminLogin, w, data)
 }
