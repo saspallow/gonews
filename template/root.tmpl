@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/-/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css" rel="stylesheet">
     {{template "root-style" }}
   </head>
   <body>
@@ -13,7 +14,9 @@
       Navbar
     </div>
     <div>
-      {{template "root-body" }}
+      <div class="container">
+        {{template "root-body" }}
+      </div>
     </div>
     <div>
       Footer
