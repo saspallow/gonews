@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/-/css/style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css" rel="stylesheet">
-    {{template "root-style" }}
+    {{template "root-style" .}}
   </head>
   <body>
     <div>
-      Navbar
+      <a href="/">HOME</a>
     </div>
     <div>
       <div class="container">
-        {{template "root-body" }}
+        {{template "root-body" .}}
       </div>
     </div>
     <div>
       Footer
     </div>
-    {{template "root-script" }}
+    {{template "root-script" .}}
   </body>
 </html>
 {{end}}

@@ -1,9 +1,9 @@
 package app
 
 import (
-	"log"
 	"net/http"
 
+	"github.com/saspallow/gonews/pkg/model"
 	"github.com/saspallow/gonews/pkg/view"
 )
 
@@ -16,15 +16,29 @@ func adminLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminList(w http.ResponseWriter, r *http.Request) {
-	view.AdminList(w, nil)
+	list, err := model.ListNews()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	view.AdminList(w, &view.AdminListData{
+		List: list,
+	})
 }
 
 func adminCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		title := r.FormValue("title")
-		detail := r.FormValue("detail")
-		log.Println(title)
-		log.Println(detail)
+		n := model.News{
+			Title:  r.FormValue("title"),
+			Detail: r.FormValue("detail"),
+		}
+		err := model.CreateNews(n)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		http.Redirect(w, r, "/admin/create", http.StatusSeeOther)
+		return
 	}
 	view.AdminCreate(w, nil)
 }

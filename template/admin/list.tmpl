@@ -2,6 +2,32 @@
 <div>
   Admin List <br>
   <a href="/admin/create">Create News</a>
+  <br>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .List}}
+        <tr>
+          <th>{{ .ID.Hex }}</th>
+          <td>{{ .Title }}</td>
+          <td>
+            <a class="button is-primary" href="/admin/edit?id={{.ID.Hex}}">Edit</a>
+            <form method="POST">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="id" value="{{.ID.Hex}}">
+              <button class="button is-primary" type="button">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {{ end }}
+    </tbody>
+  </table>
 </div>
 {{ end }}
 

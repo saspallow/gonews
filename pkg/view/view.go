@@ -1,28 +1,45 @@
 package view
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/saspallow/gonews/pkg/model"
+)
+
+type IndexData struct {
+	List []*model.News
+}
 
 // Index Renders index View
-func Index(w http.ResponseWriter, data interface{}) {
+func Index(w http.ResponseWriter, data *IndexData) {
 	render(tpIndex, w, data)
 }
 
+// News Renders news View
+func News(w http.ResponseWriter, data *model.News) {
+	render(tpNews, w, data)
+}
+
 // AdminLogin renders Admin Login View
-func AdminLogin(w http.ResponseWriter, data interface{}) {
+func AdminLogin(w http.ResponseWriter, data *IndexData) {
 	render(tpAdminLogin, w, data)
 }
 
+type AdminListData struct {
+	List []*model.News
+}
+
 // AdminList renders Admin Login View
-func AdminList(w http.ResponseWriter, data interface{}) {
+func AdminList(w http.ResponseWriter, data *AdminListData) {
 	render(tpAdminList, w, data)
 }
 
 // AdminCreate renders Admin Login View
-func AdminCreate(w http.ResponseWriter, data interface{}) {
+func AdminCreate(w http.ResponseWriter, data *IndexData) {
 	render(tpAdminCreate, w, data)
 }
 
 // AdminEdit renders Admin Login View
-func AdminEdit(w http.ResponseWriter, data interface{}) {
+func AdminEdit(w http.ResponseWriter, data *IndexData) {
 	render(tpAdminEdit, w, data)
 }
