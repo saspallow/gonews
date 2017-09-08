@@ -25,6 +25,11 @@ func AdminLogin(w http.ResponseWriter, data *IndexData) {
 	render(tpAdminLogin, w, data)
 }
 
+// AdminRegister renders Admin Register View
+func AdminRegister(w http.ResponseWriter, data *IndexData) {
+	render(tpAdminRegister, w, data)
+}
+
 type AdminListData struct {
 	List []*model.News
 }
@@ -35,11 +40,11 @@ func AdminList(w http.ResponseWriter, data *AdminListData) {
 }
 
 // AdminCreate renders Admin Login View
-func AdminCreate(w http.ResponseWriter, data *IndexData) {
+func AdminCreate(w http.ResponseWriter, data interface{}) {
 	render(tpAdminCreate, w, data)
 }
 
 // AdminEdit renders Admin Login View
-func AdminEdit(w http.ResponseWriter, data *IndexData) {
+func AdminEdit(w http.ResponseWriter, data *model.News) {
 	render(tpAdminEdit, w, data)
 }

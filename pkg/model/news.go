@@ -76,14 +76,29 @@ func GetNews(id string) (*News, error) {
 
 // DeleteNews detektes a news from database
 func DeleteNews(id string) error {
-	objectID := bson.ObjectId(id)
-	if !objectID.Valid() {
+	if !bson.IsObjectIdHex(id) {
 		return fmt.Errorf("Invalid ID")
 	}
-
+	objectID := bson.ObjectIdHex(id)
 	s := mongoSession.Copy()
 	defer s.Close()
 	err := s.DB(database).C("news").RemoveId(objectID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//UpdateNews update news
+func UpdateNews(news *News) error {
+	if news.ID == "" {
+		return fmt.Errorf("Required id to update.")
+	}
+	news.UpdateAt = time.Now()
+	s := mongoSession.Copy()
+	defer s.Close()
+	defer s.Close()
+	err := s.DB(database).C("news").UpdateId(news.ID, news)
 	if err != nil {
 		return err
 	}
