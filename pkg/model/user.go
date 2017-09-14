@@ -55,3 +55,24 @@ func Login(username, password string) (string, error) {
 	userID, _ := user["_id"].(bson.ObjectId)
 	return userID.Hex(), nil
 }
+
+func CheckUserID(id string) (bool, error) {
+	s := mongoSession.Copy()
+	defer s.Close()
+	if !bson.IsObjectIdHex(id) {
+		return false, fmt.Errorf("Invalid ID")
+	}
+	objectID := bson.ObjectIdHex(id)
+	n, err := s.
+		DB(database).
+		C("users").
+		FindId(objectID).
+		Count()
+	if err != nil {
+		return false, err
+	}
+	if n <= 0 {
+		return false, nil
+	}
+	return true, nil
+}

@@ -2,6 +2,7 @@ package view
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/saspallow/gonews/pkg/model"
 )
@@ -20,9 +21,14 @@ func News(w http.ResponseWriter, data *model.News) {
 	render(tpNews, w, data)
 }
 
+type AdminLoginData struct {
+	Flash url.Values
+}
+
 // AdminLogin renders Admin Login View
-func AdminLogin(w http.ResponseWriter, data *IndexData) {
+func AdminLogin(w http.ResponseWriter, data *AdminLoginData) {
 	render(tpAdminLogin, w, data)
+	data.Flash.Del("errors")
 }
 
 // AdminRegister renders Admin Register View

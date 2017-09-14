@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -12,19 +11,25 @@ import (
 )
 
 func adminLogin(w http.ResponseWriter, r *http.Request) {
+	sess := model.GetSession(r)
 	if r.Method == http.MethodPost {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 		userID, err := model.Login(username, password)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			sess.Flash.Add("errors", err.Error())
+			sess.Save(w)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
-		fmt.Println(userID)
+		sess.UserID = userID
+		sess.Save(w)
 		http.Redirect(w, r, "/admin/list", http.StatusSeeOther)
 		return
 	}
-	view.AdminLogin(w, nil)
+	view.AdminLogin(w, &view.AdminLoginData{
+		Flash: sess.Flash,
+	})
 }
 
 func adminRegister(w http.ResponseWriter, r *http.Request) {
@@ -35,10 +40,17 @@ func adminRegister(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 	view.AdminRegister(w, nil)
+}
+
+func adminLogout(w http.ResponseWriter, r *http.Request) {
+	sess := model.GetSession(r)
+	sess.UserID = ""
+	sess.Save(w)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func adminList(w http.ResponseWriter, r *http.Request) {

@@ -19,6 +19,17 @@
           </div>
         </div>        
         <button type="submit" class="button is-primary">Login</button>
+        {{ if .Flash.errors }}
+        <div>
+          <ul>
+            {{ range .Flash.errors }}
+            <li>
+              {{.}}
+            </li>
+            {{ end }}
+          </ul>
+        </div>
+        {{ end }}
       </form>
     </div>
     <div class="column"></div>

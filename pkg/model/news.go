@@ -1,10 +1,7 @@
 package model
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
-	"sync"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
@@ -18,17 +15,6 @@ type News struct {
 	Detail   string
 	CreateAt time.Time `bson:"createAt"`
 	UpdateAt time.Time `bson:"updateAt"`
-}
-
-var (
-	newsStorage []News
-	mutexNews   sync.RWMutex
-)
-
-func generateID() string {
-	buf := make([]byte, 16)
-	rand.Read(buf)
-	return base64.StdEncoding.EncodeToString(buf)
 }
 
 // CreateNews inserts news into database
